@@ -1,5 +1,3 @@
-//Program to create an access pin for a user account
-
 #include <iostream>
 #include <cstdint>
 #include <stdlib.h>
