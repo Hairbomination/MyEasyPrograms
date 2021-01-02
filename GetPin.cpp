@@ -4,31 +4,37 @@
 
 using pin_t = std::int_fast16_t;
 
-pin_t getPin()
-{
-	pin_t input1{};
-	std::cin >> input1;
-
-	return input1;
-}
- 
 bool isNotValid(pin_t x)			// This function tests whether the pin entered by the user is a 4-digit number.
 {
 	return (x < 1000 || x > 9999);
 }
 
-pin_t confPin(pin_t input2)		// This function asks the user to enter the pin again. The pin is rejected if it doesn't match.
+pin_t getPin()
+{
+	pin_t input1{};
+	do{
+		std::cin >> input1;
+		if(!isNotValid(input1)){
+			break;
+		}
+		std::cout << "4 digit numbers only" << std::endl << ": ";
+	}while(1);
+
+	return input1;
+}
+
+bool confPin(pin_t input2)		// This function asks the user to enter the pin again. The pin is rejected if it doesn't match.
 {
 	std::cout << "Confirm your 4-digit pin: ";
 	if (input2 == getPin()) /* removed all local variables except input2 */
 	{
 		std::cout << "Your pin is set.\n";
-		return input2;
+		return true;
 	}
 	else
 	{
 		std::cout << "Not a match. Start over.";
-		exit (EXIT_FAILURE);
+		return false;
 	}
 }
 
@@ -36,10 +42,10 @@ void logIn(pin_t userPin)		//This function sets the pin as a constant and allows
 {
 	const pin_t savedPin{ userPin };
 	std::cout << "Enter your pin to log in: "; 
-	if (getPin() == savedPin) /* removed variabled used to read pin */
-		std::cout << "Account accessed. Welcome back!";
-	else
-		std::cout << "Incorrect pin. Try again.";	//You can't actually try again. More functionality needed.
+	while(getPin() != savedPin){ /* removed variabled used to read pin */
+		std::cout << "Incorrect pin. Try again.";
+	}
+	std::cout << "Account accessed. Welcome back!";
 }
 
 int main()
@@ -49,12 +55,9 @@ int main()
  	pin_t userPin{};
 
 	std::cout << "Create your 4-digit pin: "; /* moved out of function */
-	pin1 = getPin();
-    	if (isNotValid(pin1)){
-		std::cout << "Invalid pin. Enter a 4-digit pin: "; /* moved out of function */
-		pin2 = getPin();	/* another use of getPin() instead */
-    	}
-    	userPin = isNotValid(pin2)?confPin(pin1):confPin(pin2); /* cleaner use without logical ! (NOT). "use of ?: operator" */
+	userPin = getPin();
+	while(!confPin(userPin)){
+	}
 	logIn(userPin);
 	return 0;
 }
